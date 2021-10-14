@@ -1,33 +1,52 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback, useContext } from 'react'
 import { View, StyleSheet, Dimensions, Button } from 'react-native'
 import { Text, CheckBox, Input } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import SubmitButton from '../components/SubmitButton'
 import DateTimePicker from '@react-native-community/datetimepicker';
+import CheckGroup from '../components/CheckGroup'
+import { useFocusEffect } from '@react-navigation/core'
+import UserRegistrationContext from '../Context/UserRegistrationContext'
 
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
 
 const FourthPersonalScreen = ({ navigation }) => {
 
+    const { registerInformation, setRegisterInformation } = useContext(UserRegistrationContext)
     const [showInitialDate, setShowInitialDate] = useState(false)
     const [mode, setMode] = useState('date');
     const [registerInfo, setRegisterInfo] = useState({
         hasStudies: false,
         title: '',
         speciality: '',
-        initialDate: new Date(),
-        finalDate: new Date(),
         center: '',
     })
 
-    const { hasStudies, title, speciality, initialDate, finalDate, center } = registerInfo
+    const { hasStudies, title, speciality, center } = registerInfo
+    const handleHasStudies = () => {
+        setRegisterInfo({ ...registerInfo, hasStudies: !hasStudies })
+    }
 
+    const handleSubmit = () => {
+        setRegisterInformation({
+            ...registerInformation,
+            hasStudies: hasStudies,
+            studiesQualification: title,
+            studiesSpeciality: speciality,
+            studiesCenter: center
+        })
+        navigation.navigate('FifthPersonalScreen')
+    }
 
+    useFocusEffect(
+        useCallback(() => {
+            console.log(registerInformation)
+        }, [])
+    );
 
     return (
         <View style={styles.root} >
-            <Text style={styles.genreText}>  Que estudios tienes?</Text>
             {
                 showInitialDate &&
                 <DateTimePicker
@@ -40,22 +59,8 @@ const FourthPersonalScreen = ({ navigation }) => {
                 />
             }
             <View style={styles.checkboxContainer} >
-                <CheckBox
-                    containerStyle={{ backgroundColor: 'white', borderWidth: 0 }}
-                    title='Especificar estudios'
-                    checkedIcon='dot-circle-o'
-                    uncheckedIcon='circle-o'
-                    checked={hasStudies}
-                    onPress={() => setRegisterInfo({ ...registerInfo, hasStudies: !hasStudies })}
-                />
-                <CheckBox
-                    containerStyle={{ backgroundColor: 'white', borderWidth: 0 }}
-                    title='No tengo estudios'
-                    checkedIcon='dot-circle-o'
-                    uncheckedIcon='circle-o'
-                    checked={!hasStudies}
-                    onPress={() => setRegisterInfo({ ...registerInfo, hasStudies: !hasStudies })}
-                />
+                <CheckGroup groupTitle='Que estudios tienes?' titleFirstOption='Especificar estudios'
+                    titleSecondOption='No tengo estudios' boolValue={hasStudies} onPress={handleHasStudies} />
             </View>
             {
                 hasStudies && (
@@ -94,15 +99,10 @@ const FourthPersonalScreen = ({ navigation }) => {
 
                 )
             }
-
-
             <View style={styles.buttonContainer} >
-                <SubmitButton text='GUARDAR' />
+                <SubmitButton text='GUARDAR' onPress={handleSubmit} />
             </View>
-            <Button title='Irrr' onPress={() => navigation.navigate('FifthPersonalScreen')} />
-
         </View>
-
     )
 }
 

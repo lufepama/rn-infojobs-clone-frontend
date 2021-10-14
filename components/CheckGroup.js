@@ -2,7 +2,8 @@ import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Text, CheckBox } from 'react-native-elements'
 
-const CheckGroup = ({ groupTitle, titleFirstOption, titleSecondOption }) => {
+const CheckGroup = ({ groupTitle, titleFirstOption, titleSecondOption, boolValue, onPress }) => {
+
     return (
         <View style={styles.root} >
             <Text>{groupTitle}</Text>
@@ -11,16 +12,16 @@ const CheckGroup = ({ groupTitle, titleFirstOption, titleSecondOption }) => {
                 title={titleFirstOption}
                 checkedIcon='dot-circle-o'
                 uncheckedIcon='circle-o'
-                checked={ }
-                onPress={() => setRegisterInfo({ ...registerInfo, spanish: true, foreign: false })}
+                checked={boolValue}
+                onPress={onPress}
             />
             <CheckBox
                 containerStyle={{ backgroundColor: 'white', borderWidth: 0 }}
                 title={titleSecondOption}
                 checkedIcon='dot-circle-o'
                 uncheckedIcon='circle-o'
-                checked={foreign}
-                onPress={() => setRegisterInfo({ ...registerInfo, spanish: false, foreign: true })}
+                checked={!boolValue}
+                onPress={onPress}
             />
         </View>
     )

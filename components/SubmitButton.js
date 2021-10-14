@@ -2,9 +2,16 @@ import React from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text } from 'react-native-elements'
 
-const SubmitButton = ({ navigation, text }) => {
+const SubmitButton = ({ text, onPress, isDisable }) => {
     return (
-        <TouchableOpacity style={styles.sendBtn} >
+        <TouchableOpacity style={{
+            width: '95%',
+            backgroundColor: '#ff6340',
+            alignItems: 'center',
+            height: 50,
+            justifyContent: 'center',
+
+        }} onPress={onPress} disabled={isDisable ? true : false} >
             <Text style={styles.textBtn} h5>{text}</Text>
         </TouchableOpacity>
     )

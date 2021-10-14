@@ -1,14 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { View, StyleSheet, Button, Dimensions } from 'react-native'
 import { Text, CheckBox, Input, LinearProgress, } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import SubmitButton from '../components/SubmitButton'
+import UserRegistrationContext from '../Context/UserRegistrationContext'
 
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
 
 const FirstPersonalScreen = ({ navigation }) => {
 
+    const { registerInformation, setRegisterInformation } = useContext(UserRegistrationContext)
     const [showPassword, setShowPassword] = useState(true)
     const [strongPassword, setStrongPassword] = useState({
         strongPasswordText: '',
@@ -20,15 +22,28 @@ const FirstPersonalScreen = ({ navigation }) => {
         lastName: '',
         email: '',
         password: '',
-        acceptNotifications: false
+        acceptTerms: false
     })
+
+    const { firstName, lastName, email, password, acceptTerms } = registerInfo
+    const { strongPasswordText, strongPasswordColor, strongPasswordValue } = strongPassword
 
     const onShowPassword = () => {
         setShowPassword(!showPassword)
     }
 
-    const { firstName, lastName, email, password, acceptNotifications } = registerInfo
-    const { strongPasswordText, strongPasswordColor, strongPasswordValue } = strongPassword
+    const handleSubmit = () => {
+        setRegisterInformation({
+            ...registerInformation,
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            password: password,
+            acceptTerms: acceptTerms
+        })
+        navigation.navigate('SecondPersonalScreen')
+    }
+
 
     return (
         <View style={styles.root} >
@@ -129,8 +144,8 @@ const FirstPersonalScreen = ({ navigation }) => {
             <View style={styles.checkContainer} >
                 <CheckBox
                     containerStyle={{ backgroundColor: 'white', borderWidth: 0 }}
-                    checked={acceptNotifications}
-                    onPress={() => setRegisterInfo({ ...registerInfo, acceptNotifications: !acceptNotifications })}
+                    checked={acceptTerms}
+                    onPress={() => setRegisterInfo({ ...registerInfo, acceptTerms: !acceptTerms })}
                 />
                 <Text style={styles.checkBoxText}
                     numberOfLines={2}
@@ -138,10 +153,8 @@ const FirstPersonalScreen = ({ navigation }) => {
                 </Text>
             </View>
             <View style={styles.buttonContainer} >
-                <SubmitButton text='CONTINUAR' />
+                <SubmitButton text='CONTINUAR' onPress={handleSubmit} />
             </View>
-            <Button title='Irrr' onPress={() => navigation.navigate('SecondPersonalScreen')} />
-
         </View>
     )
 }

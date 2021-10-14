@@ -1,34 +1,36 @@
-import React, { useState } from 'react'
+import React, { useState, useContext, useCallback } from 'react'
 import { View, StyleSheet, Dimensions, ScrollView, Button } from 'react-native'
 import { Input } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { Text, CheckBox } from 'react-native-elements'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import SubmitButton from '../components/SubmitButton'
+import UserRegistrationContext from '../Context/UserRegistrationContext'
+import CheckGroup from '../components/CheckGroup'
+import { useFocusEffect } from '@react-navigation/core'
 
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
 
 const SecondPersonalScreen = ({ navigation }) => {
 
+    const { registerInformation, setRegisterInformation } = useContext(UserRegistrationContext)
     const [date, setDate] = useState(new Date())
     const [inputDate, setInputdate] = useState('')
-    const [phoneNumber, setPhoneNumber] = useState('')
     const [mode, setMode] = useState('date');
     const [disableInput, setDisableInput] = useState(false)
     const [registerInfo, setRegisterInfo] = useState({
-        isManChecked: false,
-        isWomanChecked: false,
-        spanish: false,
-        foreign: false,
+        isManChecked: true,
+        liveInSpain: false,
         codePost: '',
         province: '',
-        town: ''
+        town: '',
+        phoneNumber: ''
     })
     const [fromSpain, setFromSpain] = useState(true)
 
     const [showDate, setShowDate] = useState(false)
-    const { isManChecked, isWomanChecked, spanish, foreign, codePost, province, town } = registerInfo
+    const { isManChecked, liveInSpain, codePost, province, town, phoneNumber } = registerInfo
 
     const onDatePress = () => {
         setShowDate(true)
@@ -43,16 +45,34 @@ const SecondPersonalScreen = ({ navigation }) => {
         setDisableInput(true)
     }
 
-    const onGenrePress = (genre) => {
-        if (genre) {
-            //Masc
-            setGenre({ ...genre, isManChecked: true })
-            return;
-        }
-        setGenre({ ...genre, isWomanChecked: true })
+    const handleLiveInSpain = () => {
+        setRegisterInfo({ ...registerInfo, liveInSpain: !liveInSpain })
+    }
+
+    const handleIsMan = () => {
+        setRegisterInfo({ ...registerInfo, isManChecked: !isManChecked })
+    }
+
+    const handleSubmit = () => {
+        setRegisterInformation({
+            ...registerInformation,
+            isMan: isManChecked,
+            liveInSpain: liveInSpain,
+            codePost: codePost,
+            province: province,
+            town: town,
+            birthday: inputDate,
+            phoneNumber: phoneNumber
+        })
+        navigation.navigate('ThirdPersonalScreen')
 
     }
 
+    useFocusEffect(
+        useCallback(() => {
+            console.log(registerInformation)
+        }, [])
+    );
 
     return (
         <View style={styles.root} >
@@ -95,25 +115,9 @@ const SecondPersonalScreen = ({ navigation }) => {
                         onChange={onDateChange}
                     />
                 }
-
                 <View style={styles.genreContainer} >
-                    <Text style={styles.genreText} >Genero</Text>
-                    <CheckBox
-                        containerStyle={{ backgroundColor: 'white', borderWidth: 0 }}
-                        title='Hombre'
-                        checkedIcon='dot-circle-o'
-                        uncheckedIcon='circle-o'
-                        checked={isManChecked}
-                        onPress={() => setRegisterInfo({ ...registerInfo, isManChecked: true, isWomanChecked: false })}
-                    />
-                    <CheckBox
-                        containerStyle={{ backgroundColor: 'white', borderWidth: 0 }}
-                        title='Mujer'
-                        checkedIcon='dot-circle-o'
-                        uncheckedIcon='circle-o'
-                        checked={isWomanChecked}
-                        onPress={() => setRegisterInfo({ ...registerInfo, isManChecked: false, isWomanChecked: true })}
-                    />
+                    <CheckGroup groupTitle='Genero' titleFirstOption='Hombre'
+                        titleSecondOption='Mujer' boolValue={isManChecked} onPress={handleIsMan} />
                 </View>
                 <View style={styles.phoneContainer} >
                     <Input
@@ -122,8 +126,8 @@ const SecondPersonalScreen = ({ navigation }) => {
                         placeholder='Telefono de contacto'
                         style={styles.input}
                         value={phoneNumber}
-                        onChangeText={(newUsername) =>
-                            setPhoneNumber(newUsername)
+                        onChangeText={(phoneNumber) =>
+                            setRegisterInfo({ ...registerInfo, phoneNumber: phoneNumber })
                         }
                         rightIcon={
                             <Icon
@@ -137,24 +141,10 @@ const SecondPersonalScreen = ({ navigation }) => {
                     />
                 </View>
                 <View style={styles.spanishContainer} >
-                    <Text style={styles.genreText} >Resides en españa ?</Text>
-                    <CheckBox
-                        containerStyle={{ backgroundColor: 'white', borderWidth: 0 }}
-                        title='Si'
-                        checkedIcon='dot-circle-o'
-                        uncheckedIcon='circle-o'
-                        checked={spanish}
-                        onPress={() => setRegisterInfo({ ...registerInfo, spanish: true, foreign: false })}
-                    />
-                    <CheckBox
-                        containerStyle={{ backgroundColor: 'white', borderWidth: 0 }}
-                        title='No'
-                        checkedIcon='dot-circle-o'
-                        uncheckedIcon='circle-o'
-                        checked={foreign}
-                        onPress={() => setRegisterInfo({ ...registerInfo, spanish: false, foreign: true })}
-                    />
+                    <CheckGroup groupTitle='Resides en españa ?' titleFirstOption='Si'
+                        titleSecondOption='No' boolValue={liveInSpain} onPress={handleLiveInSpain} />
                 </View>
+
                 <View style={styles.locationContainer} >
                     <Input
                         inputContainerStyle={{ borderBottomColor: '#167db7', borderBottomWidth: 2 }}
@@ -188,9 +178,8 @@ const SecondPersonalScreen = ({ navigation }) => {
                     />
                 </View>
                 <View style={styles.buttonContainer} >
-                    <SubmitButton text='GUARDAR' />
+                    <SubmitButton text='GUARDAR' onPress={handleSubmit} />
                 </View>
-                <Button title='Irrr' onPress={() => navigation.navigate('ThirdPersonalScreen')} />
 
             </ScrollView>
 

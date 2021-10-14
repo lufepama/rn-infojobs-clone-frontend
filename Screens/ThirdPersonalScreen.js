@@ -1,29 +1,33 @@
-import React, { useState } from 'react'
-import { View, StyleSheet, Dimensions, Button } from 'react-native'
+import React, { useState, useCallback, useContext } from 'react'
+import { View, StyleSheet, Dimensions, Button, ScrollView } from 'react-native'
 import { Text, CheckBox, Input } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import SubmitButton from '../components/SubmitButton'
 import DateTimePicker from '@react-native-community/datetimepicker';
+import CheckGroup from '../components/CheckGroup'
+import { useFocusEffect } from '@react-navigation/core'
+import UserRegistrationContext from '../Context/UserRegistrationContext'
 
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
 
 const ThirdPersonalScreen = ({ navigation }) => {
 
+    const { registerInformation, setRegisterInformation } = useContext(UserRegistrationContext)
     const [inputDate, setInputDate] = useState('')
     const [showDate, setShowDate] = useState(false)
     const [mode, setMode] = useState('date');
     const [disableInput, setDisableInput] = useState(false)
     const [registerInfo, setRegisterInfo] = useState({
-        isEmployed: false,
+        isEmployed: true,
+        hasBeenEmployed: false,
         company: '',
         position: '',
         date: new Date(),
-        town: '',
         acceptNotifications: false,
     })
 
-    const { isEmployed, company, position, date, town, acceptNotifications } = registerInfo
+    const { isEmployed, company, position, date, work_town, hasBeenEmployed, acceptNotifications } = registerInfo
 
     const onDatePress = () => {
         setShowDate(true)
@@ -38,97 +42,163 @@ const ThirdPersonalScreen = ({ navigation }) => {
         setDisableInput(true)
     }
 
+    const handleIsEmpoyed = () => {
+        setRegisterInfo({ ...registerInfo, isEmployed: !isEmployed })
+    }
+
+    const handleHasBeenEmpoyed = () => {
+        setRegisterInfo({ ...registerInfo, hasBeenEmployed: !hasBeenEmployed })
+    }
+
+    const handleSubmit = () => {
+        setRegisterInformation({
+            ...registerInformation,
+            isEmployed: isEmployed,
+            hasBeenEmployed: hasBeenEmployed,
+            company: company,
+            position: position,
+            inputDate: inputDate,
+            acceptNotifications: false,
+        })
+        navigation.navigate('FourthPersonalScreen')
+    }
+
+    useFocusEffect(
+        useCallback(() => {
+            console.log(registerInformation)
+        }, [])
+    );
+
     return (
         <View style={styles.root} >
-            <Text style={styles.genreText}>  Estas trabajando actualmente?</Text>
-            {
-                showDate &&
-                <DateTimePicker
-                    testID="dateTimePicker"
-                    value={date}
-                    mode={mode}
-                    is24Hour={true}
-                    display="default"
-                    onChange={onDateChange}
-                />
-            }
-            <View style={styles.checkboxContainer} >
-                <CheckBox
-                    containerStyle={{ backgroundColor: 'white', borderWidth: 0 }}
-                    title='Si'
-                    checkedIcon='dot-circle-o'
-                    uncheckedIcon='circle-o'
-                    checked={isEmployed}
-                    onPress={() => setRegisterInfo({ ...registerInfo, isEmployed: true })}
-                />
-                <CheckBox
-                    containerStyle={{ backgroundColor: 'white', borderWidth: 0 }}
-                    title='No'
-                    checkedIcon='dot-circle-o'
-                    uncheckedIcon='circle-o'
-                    checked={!isEmployed}
-                    onPress={() => setRegisterInfo({ ...registerInfo, isEmployed: false })}
-                />
-            </View>
-
-            <View style={styles.historialContainer}>
-                <Input
-                    inputContainerStyle={{ borderBottomColor: '#167db7', borderBottomWidth: 2 }}
-                    placeholderTextColor='grey'
-                    placeholder='Provincia'
-                    style={styles.input}
-                    value={company}
-                    onChangeText={(newCompany) =>
-                        setRegisterInfo({ ...registerInfo, company: newCompany })
-                    }
-                />
-                <Input
-                    inputContainerStyle={{ borderBottomColor: '#167db7', borderBottomWidth: 2 }}
-                    placeholderTextColor='grey'
-                    placeholder='Poblacion'
-                    style={styles.input}
-                    value={town}
-                    onChangeText={(newPosition) =>
-                        setRegisterInfo({ ...registerInfo, position: newPosition })
-                    }
-                />
-                <Input
-                    inputContainerStyle={{ borderBottomColor: '#167db7', borderBottomWidth: 2 }}
-                    placeholderTextColor='#DAE9F2'
-                    placeholder='Fecha de inicio'
-                    style={styles.input}
-                    value={inputDate}
-                    onChangeText={(newDate) =>
-                        setRegisterInfo({ ...registerInfo, date: newDate })
-                    }
-                    rightIcon={
-                        <Icon
-                            onPress={onDatePress}
-                            style={styles.formIcon}
-                            name='sort-down'
-                            size={24}
-                            color='black'
+            <ScrollView>
+                {
+                    showDate &&
+                    <DateTimePicker
+                        testID="dateTimePicker"
+                        value={date}
+                        mode={mode}
+                        is24Hour={true}
+                        display="default"
+                        onChange={onDateChange}
+                    />
+                }
+                <View style={styles.checkboxContainer} >
+                    <CheckGroup groupTitle='Estas trabajando actualmente?' titleFirstOption='Si'
+                        titleSecondOption='No' boolValue={isEmployed} onPress={handleIsEmpoyed} />
+                </View>
+                {
+                    isEmployed == true
+                        ? (
+                            <View style={styles.historialContainer}>
+                                <Input
+                                    inputContainerStyle={{ borderBottomColor: '#167db7', borderBottomWidth: 2 }}
+                                    placeholderTextColor='grey'
+                                    placeholder='Empresa'
+                                    style={styles.input}
+                                    value={company}
+                                    onChangeText={(newCompany) =>
+                                        setRegisterInfo({ ...registerInfo, company: newCompany })
+                                    }
+                                />
+                                <Input
+                                    inputContainerStyle={{ borderBottomColor: '#167db7', borderBottomWidth: 2 }}
+                                    placeholderTextColor='grey'
+                                    placeholder='Puesto'
+                                    style={styles.input}
+                                    value={position}
+                                    onChangeText={(newPosition) =>
+                                        setRegisterInfo({ ...registerInfo, position: newPosition })
+                                    }
+                                />
+                                <Input
+                                    inputContainerStyle={{ borderBottomColor: '#167db7', borderBottomWidth: 2 }}
+                                    placeholderTextColor='#DAE9F2'
+                                    placeholder='Fecha de inicio'
+                                    style={styles.input}
+                                    value={inputDate}
+                                    onChangeText={(newDate) =>
+                                        setRegisterInfo({ ...registerInfo, date: newDate })
+                                    }
+                                    rightIcon={
+                                        <Icon
+                                            onPress={onDatePress}
+                                            style={styles.formIcon}
+                                            name='sort-down'
+                                            size={24}
+                                            color='black'
+                                        />
+                                    }
+                                />
+                            </View>
+                        )
+                        : (
+                            <View style={styles.checkboxContainer} >
+                                <CheckGroup groupTitle='Has trabajado antes ?' titleFirstOption='Si'
+                                    titleSecondOption='No' boolValue={hasBeenEmployed} onPress={handleHasBeenEmpoyed} />
+                            </View>
+                        )
+                }
+                {
+                    hasBeenEmployed && <View style={styles.historialContainer}>
+                        <Input
+                            inputContainerStyle={{ borderBottomColor: '#167db7', borderBottomWidth: 2 }}
+                            placeholderTextColor='grey'
+                            placeholder='Empresa'
+                            style={styles.input}
+                            value={company}
+                            onChangeText={(newCompany) =>
+                                setRegisterInfo({ ...registerInfo, company: newCompany })
+                            }
                         />
-                    }
-                />
-            </View>
+                        <Input
+                            inputContainerStyle={{ borderBottomColor: '#167db7', borderBottomWidth: 2 }}
+                            placeholderTextColor='grey'
+                            placeholder='Poblacion'
+                            style={styles.input}
+                            value={town}
+                            onChangeText={(newPosition) =>
+                                setRegisterInfo({ ...registerInfo, position: newPosition })
+                            }
+                        />
+                        <Input
+                            inputContainerStyle={{ borderBottomColor: '#167db7', borderBottomWidth: 2 }}
+                            placeholderTextColor='#DAE9F2'
+                            placeholder='Fecha de inicio'
+                            style={styles.input}
+                            value={inputDate}
+                            onChangeText={(newDate) =>
+                                setRegisterInfo({ ...registerInfo, date: newDate })
+                            }
+                            rightIcon={
+                                <Icon
+                                    onPress={onDatePress}
+                                    style={styles.formIcon}
+                                    name='sort-down'
+                                    size={24}
+                                    color='black'
+                                />
+                            }
+                        />
+                    </View>
+                }
 
-            <View style={styles.checkContainer} >
-                <CheckBox
-                    containerStyle={{ backgroundColor: 'white', borderWidth: 0 }}
-                    checked={acceptNotifications}
-                    onPress={() => setRegisterInfo({ ...registerInfo, acceptNotifications: !acceptNotifications })}
-                />
-                <Text style={styles.checkBoxText}
-                    numberOfLines={2}
-                    h5>Quiero recibir ofertas de empleo  basadas en mi puesto de trabajo y provincia
-                </Text>
-            </View>
-            <View style={styles.buttonContainer} >
-                <SubmitButton text='GUARDAR Y CONTINUAR' />
-            </View>
-            <Button title='Irrr' onPress={() => navigation.navigate('FourthPersonalScreen')} />
-
+                <View style={styles.checkContainer} >
+                    <CheckBox
+                        containerStyle={{ backgroundColor: 'white', borderWidth: 0 }}
+                        checked={acceptNotifications}
+                        onPress={() => setRegisterInfo({ ...registerInfo, acceptNotifications: !acceptNotifications })}
+                    />
+                    <Text style={styles.checkBoxText}
+                        numberOfLines={2}
+                        h5>Quiero recibir ofertas de empleo  basadas en mi puesto de trabajo y provincia
+                    </Text>
+                </View>
+                <View style={styles.buttonContainer} >
+                    <SubmitButton text='GUARDAR Y CONTINUAR' onPress={handleSubmit} />
+                </View>
+                <Button title='Irrr' onPress={() => navigation.navigate('FourthPersonalScreen')} />
+            </ScrollView>
         </View>
 
     )
