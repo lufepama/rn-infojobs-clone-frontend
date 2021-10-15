@@ -6,6 +6,7 @@ import SubmitButtonSimple from '../components/SubmitButtonSimple'
 import { useFocusEffect } from '@react-navigation/core'
 import UserRegistrationContext from '../Context/UserRegistrationContext'
 import { sendVerificationCode } from '../Helper/sendVerificationCode'
+import { signup } from '../Helper/signup'
 
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
@@ -13,33 +14,53 @@ const windowHeight = Dimensions.get('window').height
 const FifthPersonalScreen = ({ navigation }) => {
 
     const { registerInformation, setRegisterInformation } = useContext(UserRegistrationContext)
-    const [verificationCode, setVerificationCode] = useState('')
+    const [verificationCode, setVerificationCode] = useState({
+        codeInput: '',
+        code: '',
+        isCorrect: '',
+        showVerification: false,
+        codeMessage: ''
+    })
     const [buttonText, setButtonText] = useState('Enviar codigo')
     const [isButtonDisable, setIsButtonDissable] = useState(false)
-    const [showVerification, setShowVerification] = useState(false)
     const [timer, setTimer] = useState(10)
 
-    const { email } = registerInformation
+    const { codeInput, code, isCorrect, showVerification, codeMessage } = verificationCode
+    const userData = registerInformation
+    const { email, username, password } = userData
 
     const handleSubmit = async () => {
         if (!email) return;
         setIsButtonDissable(true)
+        setVerificationCode({ ...verificationCode, codeInput: '', codeMessage: '' })
+
         const response = await sendVerificationCode(email)
-        const { success, error } = response
+        const { success, error, code } = response
         if (success) {
-            setShowVerification(true)
+            console.log(code)
+            setVerificationCode({ ...verificationCode, showVerification: true, code: code, codeMessage: '' })
             setIsButtonDissable(false)
             setButtonText('Reenviar el codigo')
         }
     }
 
-    if (timer === 0) {
-        console.log('Paraaaaao')
+    const handleCodeSubmit = async () => {
+        if (codeInput === code) {
+            setVerificationCode({ ...verificationCode, codeInput: '', codeMessage: 'Cuenta creada satisfactoriamente, puedes inicar sesion' })
+            console.log(userData)
+            const response = await (signup(userData))
+
+            const { success } = response
+            console.log('success', success)
+
+            return;
+        }
+        setVerificationCode({ ...verificationCode, codeInput: '', codeMessage: 'El codigo que has introducido no es correcto' })
     }
 
     useFocusEffect(
         useCallback(() => {
-
+            console.log(registerInformation)
         }, [])
     );
 
@@ -75,14 +96,19 @@ const FifthPersonalScreen = ({ navigation }) => {
                                         placeholderTextColor='#DAE9F2'
                                         placeholder='Codigo...'
                                         style={styles.input}
-                                        value={verificationCode}
-                                        onChangeText={(code) => setVerificationCode(code)}
+                                        value={codeInput}
+                                        onChangeText={(code) => setVerificationCode({ ...verificationCode, codeInput: code })}
                                     />
-                                    <TouchableOpacity style={styles.bottomContainer} >
+                                    <TouchableOpacity style={styles.bottomContainer} onPress={handleCodeSubmit} >
                                         <Text>Enviar</Text>
                                     </TouchableOpacity>
                                 </View>
                             )
+                            : null
+                    }
+                    {
+                        codeMessage.length > 0
+                            ? <Text>{codeMessage}</Text>
                             : null
                     }
 

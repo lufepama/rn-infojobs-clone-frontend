@@ -20,17 +20,17 @@ const SecondPersonalScreen = ({ navigation }) => {
     const [mode, setMode] = useState('date');
     const [disableInput, setDisableInput] = useState(false)
     const [registerInfo, setRegisterInfo] = useState({
-        isManChecked: true,
-        liveInSpain: false,
-        codePost: '',
-        province: '',
-        town: '',
-        phoneNumber: ''
+        is_man: true,
+        lives_in_spain: false,
+        code_post: '28025',
+        province: 'madrid',
+        town: 'madrid',
+        phone_number: '643178250'
     })
     const [fromSpain, setFromSpain] = useState(true)
 
     const [showDate, setShowDate] = useState(false)
-    const { isManChecked, liveInSpain, codePost, province, town, phoneNumber } = registerInfo
+    const { is_man, lives_in_spain, code_post, province, town, phone_number } = registerInfo
 
     const onDatePress = () => {
         setShowDate(true)
@@ -46,23 +46,23 @@ const SecondPersonalScreen = ({ navigation }) => {
     }
 
     const handleLiveInSpain = () => {
-        setRegisterInfo({ ...registerInfo, liveInSpain: !liveInSpain })
+        setRegisterInfo({ ...registerInfo, lives_in_spain: !lives_in_spain })
     }
 
     const handleIsMan = () => {
-        setRegisterInfo({ ...registerInfo, isManChecked: !isManChecked })
+        setRegisterInfo({ ...registerInfo, is_man: !is_man })
     }
 
     const handleSubmit = () => {
         setRegisterInformation({
             ...registerInformation,
-            isMan: isManChecked,
-            liveInSpain: liveInSpain,
-            codePost: codePost,
+            is_man: is_man,
+            lives_in_spain: lives_in_spain,
+            code_post: code_post,
             province: province,
             town: town,
-            birthday: inputDate,
-            phoneNumber: phoneNumber
+            birth_day: inputDate,
+            phone_number: phone_number
         })
         navigation.navigate('ThirdPersonalScreen')
 
@@ -117,7 +117,7 @@ const SecondPersonalScreen = ({ navigation }) => {
                 }
                 <View style={styles.genreContainer} >
                     <CheckGroup groupTitle='Genero' titleFirstOption='Hombre'
-                        titleSecondOption='Mujer' boolValue={isManChecked} onPress={handleIsMan} />
+                        titleSecondOption='Mujer' boolValue={is_man} onPress={handleIsMan} />
                 </View>
                 <View style={styles.phoneContainer} >
                     <Input
@@ -125,9 +125,9 @@ const SecondPersonalScreen = ({ navigation }) => {
                         placeholderTextColor='grey'
                         placeholder='Telefono de contacto'
                         style={styles.input}
-                        value={phoneNumber}
+                        value={phone_number}
                         onChangeText={(phoneNumber) =>
-                            setRegisterInfo({ ...registerInfo, phoneNumber: phoneNumber })
+                            setRegisterInfo({ ...registerInfo, phone_number: phoneNumber })
                         }
                         rightIcon={
                             <Icon
@@ -142,7 +142,7 @@ const SecondPersonalScreen = ({ navigation }) => {
                 </View>
                 <View style={styles.spanishContainer} >
                     <CheckGroup groupTitle='Resides en españa ?' titleFirstOption='Si'
-                        titleSecondOption='No' boolValue={liveInSpain} onPress={handleLiveInSpain} />
+                        titleSecondOption='No' boolValue={lives_in_spain} onPress={handleLiveInSpain} />
                 </View>
 
                 <View style={styles.locationContainer} >
@@ -151,9 +151,9 @@ const SecondPersonalScreen = ({ navigation }) => {
                         placeholderTextColor='grey'
                         placeholder='Codigo postal'
                         style={styles.input}
-                        value={codePost}
-                        onChangeText={(codepost) =>
-                            setRegisterInfo({ ...registerInfo, codePost: codepost })
+                        value={code_post}
+                        onChangeText={(code_post) =>
+                            setRegisterInfo({ ...registerInfo, code_post: code_post })
                         }
                     />
                     <Input

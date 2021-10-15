@@ -18,14 +18,15 @@ const FirstPersonalScreen = ({ navigation }) => {
         strongPasswordValue: 0
     })
     const [registerInfo, setRegisterInfo] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-        acceptTerms: false
+        first_name: 'Martina',
+        last_name: 'Paz',
+        email: 'martina@gmail.com',
+        password: 'trial',
+        username: 'martinita11',
+        accept_terms: false
     })
 
-    const { firstName, lastName, email, password, acceptTerms } = registerInfo
+    const { first_name, last_name, email, password, accept_terms, username } = registerInfo
     const { strongPasswordText, strongPasswordColor, strongPasswordValue } = strongPassword
 
     const onShowPassword = () => {
@@ -35,11 +36,12 @@ const FirstPersonalScreen = ({ navigation }) => {
     const handleSubmit = () => {
         setRegisterInformation({
             ...registerInformation,
-            firstName: firstName,
-            lastName: lastName,
+            first_name: first_name,
+            last_name: last_name,
+            username: username,
             email: email,
             password: password,
-            acceptTerms: acceptTerms
+            accept_terms: accept_terms
         })
         navigation.navigate('SecondPersonalScreen')
     }
@@ -51,9 +53,19 @@ const FirstPersonalScreen = ({ navigation }) => {
                 <Input
                     inputContainerStyle={{ borderBottomColor: '#167db7', borderBottomWidth: 2 }}
                     placeholderTextColor='grey'
+                    placeholder='Usuario'
+                    style={styles.input}
+                    value={username}
+                    onChangeText={(username) =>
+                        setRegisterInfo({ ...registerInfo, username: username })
+                    }
+                />
+                <Input
+                    inputContainerStyle={{ borderBottomColor: '#167db7', borderBottomWidth: 2 }}
+                    placeholderTextColor='grey'
                     placeholder='Nombre'
                     style={styles.input}
-                    value={firstName}
+                    value={first_name}
                     onChangeText={(firstName) =>
                         setRegisterInfo({ ...registerInfo, firstName: firstName })
                     }
@@ -63,7 +75,7 @@ const FirstPersonalScreen = ({ navigation }) => {
                     placeholderTextColor='grey'
                     placeholder='Primer apellido'
                     style={styles.input}
-                    value={lastName}
+                    value={last_name}
                     onChangeText={(lastName) =>
                         setRegisterInfo({ ...registerInfo, lastName: lastName })
                     }
@@ -144,8 +156,8 @@ const FirstPersonalScreen = ({ navigation }) => {
             <View style={styles.checkContainer} >
                 <CheckBox
                     containerStyle={{ backgroundColor: 'white', borderWidth: 0 }}
-                    checked={acceptTerms}
-                    onPress={() => setRegisterInfo({ ...registerInfo, acceptTerms: !acceptTerms })}
+                    checked={accept_terms}
+                    onPress={() => setRegisterInfo({ ...registerInfo, accept_terms: !accept_terms })}
                 />
                 <Text style={styles.checkBoxText}
                     numberOfLines={2}

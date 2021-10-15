@@ -5,13 +5,39 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import { Text } from 'react-native-elements'
 import SubmitButtonSimple from '../components/SubmitButtonSimple'
 import SubmitButton from '../components/SubmitButton'
+import { signin } from '../Helper/signin'
+import { saveToken } from '../Helper/index'
+import { useUserInfo } from '../Hooks/useUserInfo'
 
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
 
 const SigninScreen = ({ navigation }) => {
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
+
+
+    const [username, setUsername] = useState('martinita')
+    const [password, setPassword] = useState('trial')
+    const { setIsUserLogged, userInfo, setUserInfo } = useUserInfo();
+
+    const onSubmit = async () => {
+
+        const response = await signin(username, password)
+
+        const { success, error } = response
+        console.log(response.token)
+        if (success) {
+            console.log(response.token)
+            saveToken(response.token)
+            setIsUserLogged(true)
+            setUserInfo({
+                ...userInfo, username: response.username, firstName: response.firstName,
+                lastName: response.lastName, email: response.email,
+                token: response.token
+            })
+        }
+
+    }
+
 
     return (
         <View style={styles.root} >
@@ -39,10 +65,10 @@ const SigninScreen = ({ navigation }) => {
                     value={password}
                     onChangeText={(password) => setPassword(password)}
                 />
-                <SubmitButton text='ENTRAR EN INFOJOBS' />
+                <SubmitButton text='ENTRAR EN INFOJOBS' onPress={onSubmit} />
                 <SubmitButtonSimple navigation={navigation} text='DARSE DE ALTA' />
             </View>
-            <TouchableOpacity style={styles.rememberBtn} >
+            <TouchableOpacity style={styles.rememberBtn}  >
                 <Text style={styles.textBtn} h5 >HE OLVIDADO MI CONTRASEÑA  </Text>
             </TouchableOpacity>
 

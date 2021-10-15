@@ -17,33 +17,27 @@ const FourthPersonalScreen = ({ navigation }) => {
     const [showInitialDate, setShowInitialDate] = useState(false)
     const [mode, setMode] = useState('date');
     const [registerInfo, setRegisterInfo] = useState({
-        hasStudies: false,
-        title: '',
-        speciality: '',
-        center: '',
+        has_studies: false,
+        studies_qualification: 'medicina',
+        studies_speciality: 'cirujia',
+        studies_center: 'upm',
     })
 
-    const { hasStudies, title, speciality, center } = registerInfo
+    const { has_studies, studies_qualification, studies_speciality, studies_center } = registerInfo
     const handleHasStudies = () => {
-        setRegisterInfo({ ...registerInfo, hasStudies: !hasStudies })
+        setRegisterInfo({ ...registerInfo, has_studies: !has_studies })
     }
 
     const handleSubmit = () => {
         setRegisterInformation({
             ...registerInformation,
-            hasStudies: hasStudies,
-            studiesQualification: title,
-            studiesSpeciality: speciality,
-            studiesCenter: center
+            has_studies: has_studies,
+            studies_qualification: studies_qualification,
+            studies_speciality: studies_speciality,
+            studies_center: studies_center
         })
         navigation.navigate('FifthPersonalScreen')
     }
-
-    useFocusEffect(
-        useCallback(() => {
-            console.log(registerInformation)
-        }, [])
-    );
 
     return (
         <View style={styles.root} >
@@ -60,19 +54,19 @@ const FourthPersonalScreen = ({ navigation }) => {
             }
             <View style={styles.checkboxContainer} >
                 <CheckGroup groupTitle='Que estudios tienes?' titleFirstOption='Especificar estudios'
-                    titleSecondOption='No tengo estudios' boolValue={hasStudies} onPress={handleHasStudies} />
+                    titleSecondOption='No tengo estudios' boolValue={has_studies} onPress={handleHasStudies} />
             </View>
             {
-                hasStudies && (
+                has_studies && (
                     <View style={styles.historialContainer}>
                         <Input
                             inputContainerStyle={{ borderBottomColor: '#167db7', borderBottomWidth: 2 }}
                             placeholderTextColor='grey'
                             placeholder='Titulo'
                             style={styles.input}
-                            value={title}
+                            value={studies_qualification}
                             onChangeText={(title) =>
-                                setRegisterInfo({ ...registerInfo, title: title })
+                                setRegisterInfo({ ...registerInfo, studies_qualification: title })
                             }
                         />
                         <Input
@@ -80,9 +74,9 @@ const FourthPersonalScreen = ({ navigation }) => {
                             placeholderTextColor='grey'
                             placeholder='Especialidad'
                             style={styles.input}
-                            value={speciality}
+                            value={studies_speciality}
                             onChangeText={(speciality) =>
-                                setRegisterInfo({ ...registerInfo, speciality: speciality })
+                                setRegisterInfo({ ...registerInfo, studies_speciality: speciality })
                             }
                         />
                         <Input
@@ -90,9 +84,9 @@ const FourthPersonalScreen = ({ navigation }) => {
                             placeholderTextColor='grey'
                             placeholder='Centro'
                             style={styles.input}
-                            value={center}
+                            value={studies_center}
                             onChangeText={(center) =>
-                                setRegisterInfo({ ...registerInfo, center: center })
+                                setRegisterInfo({ ...registerInfo, studies_center: center })
                             }
                         />
                     </View>

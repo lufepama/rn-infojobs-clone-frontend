@@ -14,20 +14,21 @@ const windowHeight = Dimensions.get('window').height
 const ThirdPersonalScreen = ({ navigation }) => {
 
     const { registerInformation, setRegisterInformation } = useContext(UserRegistrationContext)
+    const [date, setDate] = useState(new Date())
     const [inputDate, setInputDate] = useState('')
     const [showDate, setShowDate] = useState(false)
     const [mode, setMode] = useState('date');
     const [disableInput, setDisableInput] = useState(false)
     const [registerInfo, setRegisterInfo] = useState({
-        isEmployed: true,
-        hasBeenEmployed: false,
-        company: '',
-        position: '',
-        date: new Date(),
-        acceptNotifications: false,
+        is_employed: true,
+        has_been_employed: false,
+        company: 'uam',
+        position: 'researcher',
+        date_employed: '',
+        accept_notifications: false,
     })
 
-    const { isEmployed, company, position, date, work_town, hasBeenEmployed, acceptNotifications } = registerInfo
+    const { is_employed, company, position, has_been_employed, accept_notifications } = registerInfo
 
     const onDatePress = () => {
         setShowDate(true)
@@ -43,22 +44,22 @@ const ThirdPersonalScreen = ({ navigation }) => {
     }
 
     const handleIsEmpoyed = () => {
-        setRegisterInfo({ ...registerInfo, isEmployed: !isEmployed })
+        setRegisterInfo({ ...registerInfo, is_employed: !is_employed })
     }
 
     const handleHasBeenEmpoyed = () => {
-        setRegisterInfo({ ...registerInfo, hasBeenEmployed: !hasBeenEmployed })
+        setRegisterInfo({ ...registerInfo, has_been_employed: !has_been_employed })
     }
 
     const handleSubmit = () => {
         setRegisterInformation({
             ...registerInformation,
-            isEmployed: isEmployed,
-            hasBeenEmployed: hasBeenEmployed,
+            is_employed: is_employed,
+            has_been_employed: has_been_employed,
             company: company,
             position: position,
-            inputDate: inputDate,
-            acceptNotifications: false,
+            date_employed: "2021-11-02",
+            accept_notifications: false,
         })
         navigation.navigate('FourthPersonalScreen')
     }
@@ -85,10 +86,10 @@ const ThirdPersonalScreen = ({ navigation }) => {
                 }
                 <View style={styles.checkboxContainer} >
                     <CheckGroup groupTitle='Estas trabajando actualmente?' titleFirstOption='Si'
-                        titleSecondOption='No' boolValue={isEmployed} onPress={handleIsEmpoyed} />
+                        titleSecondOption='No' boolValue={is_employed} onPress={handleIsEmpoyed} />
                 </View>
                 {
-                    isEmployed == true
+                    is_employed == true
                         ? (
                             <View style={styles.historialContainer}>
                                 <Input
@@ -118,7 +119,7 @@ const ThirdPersonalScreen = ({ navigation }) => {
                                     style={styles.input}
                                     value={inputDate}
                                     onChangeText={(newDate) =>
-                                        setRegisterInfo({ ...registerInfo, date: newDate })
+                                        setRegisterInfo({ ...registerInfo, date_employed: newDate })
                                     }
                                     rightIcon={
                                         <Icon
@@ -135,12 +136,12 @@ const ThirdPersonalScreen = ({ navigation }) => {
                         : (
                             <View style={styles.checkboxContainer} >
                                 <CheckGroup groupTitle='Has trabajado antes ?' titleFirstOption='Si'
-                                    titleSecondOption='No' boolValue={hasBeenEmployed} onPress={handleHasBeenEmpoyed} />
+                                    titleSecondOption='No' boolValue={has_been_employed} onPress={handleHasBeenEmpoyed} />
                             </View>
                         )
                 }
                 {
-                    hasBeenEmployed && <View style={styles.historialContainer}>
+                    has_been_employed && <View style={styles.historialContainer}>
                         <Input
                             inputContainerStyle={{ borderBottomColor: '#167db7', borderBottomWidth: 2 }}
                             placeholderTextColor='grey'
@@ -154,9 +155,9 @@ const ThirdPersonalScreen = ({ navigation }) => {
                         <Input
                             inputContainerStyle={{ borderBottomColor: '#167db7', borderBottomWidth: 2 }}
                             placeholderTextColor='grey'
-                            placeholder='Poblacion'
+                            placeholder='Posicion'
                             style={styles.input}
-                            value={town}
+                            value={position}
                             onChangeText={(newPosition) =>
                                 setRegisterInfo({ ...registerInfo, position: newPosition })
                             }
@@ -186,8 +187,8 @@ const ThirdPersonalScreen = ({ navigation }) => {
                 <View style={styles.checkContainer} >
                     <CheckBox
                         containerStyle={{ backgroundColor: 'white', borderWidth: 0 }}
-                        checked={acceptNotifications}
-                        onPress={() => setRegisterInfo({ ...registerInfo, acceptNotifications: !acceptNotifications })}
+                        checked={accept_notifications}
+                        onPress={() => setRegisterInfo({ ...registerInfo, accept_notifications: !accept_notifications })}
                     />
                     <Text style={styles.checkBoxText}
                         numberOfLines={2}
