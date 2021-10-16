@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import { View, StyleSheet, Image, Dimensions, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Image, Dimensions, TouchableOpacity, TouchableHighlight } from 'react-native'
 import { Text, Divider } from 'react-native-elements'
 import { deleteToken } from '../Helper'
 import { useUserInfo } from '../Hooks/useUserInfo'
@@ -7,6 +7,7 @@ import SearchBar from '../components/SearchBar'
 import { useFocusEffect } from '@react-navigation/core'
 import { useOffers } from '../Hooks/useOffers'
 import OfferList from '../components/OfferList'
+import BottomTab from '../components/BottomTab'
 
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
@@ -50,6 +51,7 @@ const HomeScreen = () => {
             <TouchableOpacity style={{ backgroundColor: 'red', width: 40, height: 40 }} onPress={onDeleteToken} >
                 <Text h6>Volver</Text>
             </TouchableOpacity>
+            <BottomTab />
         </View>
     )
 }
@@ -92,6 +94,12 @@ const styles = StyleSheet.create({
     },
     resultsContainer: {
         flex: 2
+    },
+    buttonn: {
+        marginBottom: 30,
+        width: 260,
+        alignItems: 'center',
+        backgroundColor: '#2196F3'
     }
 })
 
